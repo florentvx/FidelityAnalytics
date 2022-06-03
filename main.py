@@ -4,7 +4,7 @@ import datetime
 
 from core import transaction_type, asset, get_transation_type, history
 
-data = pd.read_csv(r'C:\Users\flore\source\repos\FidelityAnalytics\TransactionHistory.csv')
+data = pd.read_csv(r'C:\Users\flore\source\repos\FidelityAnalytics\data\TransactionHistory_20220603.csv')
 
 new_data = pd.DataFrame()
 new_data["date"] = data["Completion date"].apply(lambda x: datetime.datetime.strptime(x, '%d %b %Y').date())

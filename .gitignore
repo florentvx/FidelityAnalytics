@@ -1,1 +1,2 @@
-TransactionHistory.csv
+data/
+core/__pycache__/

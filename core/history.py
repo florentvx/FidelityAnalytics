@@ -12,7 +12,7 @@ class history_item:
     date:               dt.date
     tx_type:            transaction_type
     source_investment:  str
-    item_asset:         asset
+    item_asset:         asset = None
     alloc:              allocation
 
     def __init__(
@@ -43,7 +43,11 @@ class history_item:
         alloc_item.add_asset(self.tx_type, self.item_asset)
         
     def __str__(self):
-        return f"{self.date} - {self.tx_type.name} : \n{self.alloc}"
+        if self.item_asset is None:
+            return f"{self.date} - {self.tx_type.name} : \n{self.alloc}"
+        else:
+            return f"{self.date} - {self.tx_type.name} : \n traded asset {self.item_asset} \n{self.alloc}"
+
     
 class history:
     data : list[history_item]
