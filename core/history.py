@@ -10,44 +10,42 @@ from .allocation import allocation
 class history_item:
     
     date:               dt.date
-    tx_type:            transaction_type
-    source_investment:  str
-    item_asset:         asset = None
     alloc:              allocation
+    tx_type:            transaction_type = None
+    source_investment:  str = None
+    asset:              asset = None
 
     def __init__(
         self, 
-        date:               dt.date, 
-        tx_type:            transaction_type,
-        source_investment:  str = None,
-        prev_alloc:         allocation = None,
+        date:   dt.date, 
+        alloc:  allocation = None,
         ) -> None:
 
         self.date = date
-        self.tx_type = tx_type
-        self.source_investment = source_investment
-
         self.alloc = allocation()
-        if not prev_alloc is None:
-            self.alloc = prev_alloc.copy()
+        if not alloc is None:
+            self.alloc = alloc.copy()
 
     def add_asset(
-        self, 
-        asset: asset,
+        self,
+        tx_type:            transaction_type,
+        source_investment:  str,
+        asset:              asset,
         ) -> None:
 
-        self.item_asset = asset.copy()
-        alloc_item = self.alloc.get(self.item_asset.name)
+        self.tx_type = tx_type
+        self.source_investment = source_investment
+        self.asset = asset.copy()
+        alloc_item = self.alloc.get(self.asset.name)
         if not self.source_investment is None:
             alloc_item = self.alloc.get(self.source_investment, trigger_error = True)
-        alloc_item.add_asset(self.tx_type, self.item_asset)
+        alloc_item.add_asset(self.tx_type, self.asset)
         
     def __str__(self):
-        if self.item_asset is None:
-            return f"{self.date} - {self.tx_type.name} : \n{self.alloc}"
-        else:
-            return f"{self.date} - {self.tx_type.name} : \n traded asset {self.item_asset} \n{self.alloc}"
-
+        asset_log = ""
+        if not self.asset is None:
+            asset_log = f"\ntraded asset : {self.asset}"
+        return f"{self.date} - {self.tx_type.name} :{asset_log} \n{self.alloc}"
     
 class history:
     data : list[history_item]
@@ -66,8 +64,8 @@ class history:
         ) -> None:
         
         prev_item : history_item = self.data[-1]
-        new_item = history_item(date, tx_type, source_investment, prev_item.alloc)
-        new_item.add_asset(asset)
+        new_item = history_item(date, prev_item.alloc)
+        new_item.add_asset(tx_type, source_investment, asset)
         print(f"\n{new_item}")
         self.data += [new_item]
 
