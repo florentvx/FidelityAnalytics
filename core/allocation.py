@@ -3,8 +3,6 @@ from __future__ import annotations
 from .transaction_type import transaction_type
 from .asset import asset
 
-
-
 class allocation_item:
     
     core:                   asset
@@ -70,10 +68,13 @@ class allocation_item:
 
 class allocation:
 
-    data: dict[allocation_item]
+    _data: dict[str, allocation_item]
 
     def __init__(self):
-        self.data = {}
+        self._data = {}
+
+    def keys(self) -> list[str]:
+        return self._data.keys()
 
     def get(
         self, 
@@ -81,23 +82,23 @@ class allocation:
         trigger_error:  bool = False,
         ) -> allocation_item:
 
-        if not name in self.data:
+        if not name in self._data:
             if trigger_error:
                 raise ValueError(f"name not found: {name}")
-            self.data[name] = allocation_item(name)
-        return self.data[name]
+            self._data[name] = allocation_item(name)
+        return self._data[name]
 
     def copy(self) -> allocation:
         res = allocation()
-        res.data = {
+        res._data = {
             k: v.copy() 
-            for (k,v) in self.data.items()
+            for (k, v) in self._data.items()
         }
         return res
 
     def __str__(self):
         res = [
             f" -> {item}" 
-            for _, item in self.data.items()
+            for _, item in self._data.items()
         ]
         return "\n".join(res)
