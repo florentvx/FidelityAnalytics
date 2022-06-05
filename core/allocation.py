@@ -1,13 +1,15 @@
 from __future__ import annotations
 
+import datetime as dt
+
 from .transaction_type import transaction_type
 from .asset import asset
+from .timeseries import timeseries
 
 class allocation_item:
     
     core:                   asset
-    dividends_rate_hist:    list
-    dividends:              float
+    dividends:              timeseries
     
     def __init__(
         self, 
@@ -15,17 +17,14 @@ class allocation_item:
         ):
 
         self.core = asset(name, 0, 0, 0)
-        self._dividends_rate_hist = []
-        self.dividends = 0.0
+        self.dividends = timeseries(f"{name}_DIV")
 
-    @property
     def average_dividend_rate(self) -> float:
-        if len(self._dividends_rate_hist) == 0:
-            return 0.0
-        return sum(self._dividends_rate_hist)/len(self._dividends_rate_hist)
+        raise ValueError("not implemented")
 
     def add_asset(
         self,
+        date:       dt.date,
         tx_type:    transaction_type,
         asset:      asset,
         ) -> None:
@@ -43,8 +42,7 @@ class allocation_item:
                 raise ValueError("Dividends on cash ???")
             if asset.amount < 0:
                 raise ValueError("Negative dividends???")
-            self.dividends += asset.amount
-            self._dividends_rate_hist += [asset.amount / self.core.amount * 4] ## supposition 1 dividend per quarter
+            self.dividends.add(date, asset.amount)
         elif tx_type in [transaction_type.CASH_IN_RING_FENCED_FOR_FEES, transaction_type.TRANSFER_TO_CASH_MANAGEMENT_ACCOUNT_FOR_FEES]:
             # fees are already registered as "service fee"
             pass
@@ -55,15 +53,14 @@ class allocation_item:
     def copy(self):
         res = allocation_item(self.core.name)
         res.core = self.core.copy()
-        res._dividends_rate_hist = self._dividends_rate_hist.copy()
-        res.dividends = self.dividends
+        res.dividends = self.dividends.copy()
         return res
 
     def __str__(self):
-        if self.dividends == 0:
+        if self.dividends.size() == 0:
             return f"{self.core}"
         else:
-            return f"{self.core} - Dividends: {self.dividends}"# - {self.average_dividend_rate}"
+            return f"{self.core} - Dividends: {self.dividends.sum()}"# - {self.average_dividend_rate}"
 
 
 class allocation:
@@ -74,7 +71,7 @@ class allocation:
         self._data = {}
 
     def keys(self) -> list[str]:
-        return self._data.keys()
+        return list(self._data.keys())
 
     def get(
         self, 

@@ -1,17 +1,15 @@
 from __future__ import annotations
 import datetime as dt
 
-
-
 from .transaction_type import transaction_type
 from .asset import asset
-from .allocation import allocation
+from .allocation import allocation, allocation_item
 
 class history_item:
     
     date:               dt.date
     alloc:              allocation
-    tx_type:            transaction_type = None
+    tx_type:            transaction_type = transaction_type.START
     source_investment:  str = None
     asset:              asset = None
 
@@ -26,6 +24,12 @@ class history_item:
         if not alloc is None:
             self.alloc = alloc.copy()
 
+    def get_allocation_asset_list(self) -> list[str]:
+        return self.alloc.keys()
+
+    def get_allocation_asset(self, name: str) -> allocation_item:
+        return self.alloc.get(name, trigger_error=True)
+
     def add_asset(
         self,
         tx_type:            transaction_type,
@@ -39,7 +43,7 @@ class history_item:
         alloc_item = self.alloc.get(self.asset.name)
         if not self.source_investment is None:
             alloc_item = self.alloc.get(self.source_investment, trigger_error = True)
-        alloc_item.add_asset(self.tx_type, self.asset)
+        alloc_item.add_asset(self.date, self.tx_type, self.asset)
         
     def __str__(self):
         asset_log = ""
@@ -52,9 +56,30 @@ class history:
 
     def __init__(self) -> None:
         self._data = [
-            history_item(dt.date(2000,1,1), transaction_type.START)
+            history_item(dt.date(2000,1,1))
         ]
     
+    def get(self, date: dt.date) -> history_item:
+        return self._data[self._get_closest_date(date)]
+
+    def get_last(self) -> history_item:
+        return self._data[-1]
+
+    def get_dates(self):
+        return [x.date for x in self._data]
+
+    def _get_closest_date(self, date: dt.date) -> int:
+        dates = self.get_dates()
+        if date < dates[0]:
+            raise ValueError(f"Your date {date} is too old : min. {dates[0]}")
+        
+        if date > dates[-1]:
+            return len(dates) - 1
+        i_res = 0
+        while date > dates[i_res]:
+            i_res += 1
+        return i_res - 1
+
     def add(
         self, 
         date:               dt.date, 
@@ -63,29 +88,18 @@ class history:
         asset:              asset,
         ) -> None:
         
+        if date < self.get_last().date:
+            raise "adding past event"
+
         prev_item : history_item = self._data[-1]
         new_item = history_item(date, prev_item.alloc)
         new_item.add_asset(tx_type, source_investment, asset)
         print(f"\n{new_item}")
         self._data += [new_item]
 
-    def keys(self):
-        return [x.date for x in self._data]
+    
 
-    def get_closest_date(self, date: dt.date) -> dt.date:
-        dates = self.keys()
-        if date < dates[0]:
-            raise ValueError(f"Your date {date} is too old : min. {dates[0]}")
-        
-        if date > dates[-1]:
-            return dates[-1]
-        i_res = 0
-        while date > dates[i_res]:
-            i_res += 1
-        return dates[i_res-1]
 
-    def get(self, date: dt.date) -> history_item:
-        return self._data[self.get_closest_date(date)]
 
         
     
