@@ -8,8 +8,10 @@ from .timeseries import timeseries
 
 class allocation_item:
     
-    core:                   asset
-    dividends:              timeseries
+    core:               asset
+    dividends:          timeseries
+    dividends_ratio:    timeseries
+    prices:             timeseries
     
     def __init__(
         self, 
@@ -18,6 +20,8 @@ class allocation_item:
 
         self.core = asset(name, 0, 0, 0)
         self.dividends = timeseries(f"{name}_DIV")
+        self.dividends_ratio = timeseries(f"{name}_DIV_RAT")
+        self.prices = timeseries(f"{name}_PRICES")
 
     def average_dividend_rate(self) -> float:
         raise ValueError("not implemented")
@@ -29,6 +33,8 @@ class allocation_item:
         asset:      asset,
         ) -> None:
 
+        if asset.name != "Cash":
+            self.prices.add(date, asset.price_per_unit)
         if tx_type in [transaction_type.CASH_IN_LUMP_SUM, transaction_type.CASH_IN_REGULAR_SAVINGS_PLAN]:
             self.core.add_quantity(asset)
         elif tx_type in [transaction_type.DEALING_FEE, transaction_type.SERVICE_FEE]:
@@ -43,6 +49,7 @@ class allocation_item:
             if asset.amount < 0:
                 raise ValueError("Negative dividends???")
             self.dividends.add(date, asset.amount)
+            self.dividends_ratio.add(date, asset.amount / self.core.amount)
         elif tx_type in [transaction_type.CASH_IN_RING_FENCED_FOR_FEES, transaction_type.TRANSFER_TO_CASH_MANAGEMENT_ACCOUNT_FOR_FEES]:
             # fees are already registered as "service fee"
             pass
@@ -54,13 +61,15 @@ class allocation_item:
         res = allocation_item(self.core.name)
         res.core = self.core.copy()
         res.dividends = self.dividends.copy()
+        res.dividends_ratio = self.dividends_ratio.copy()
+        res.prices = self.prices.copy()
         return res
 
     def __str__(self):
         if self.dividends.size() == 0:
             return f"{self.core}"
         else:
-            return f"{self.core} - Dividends: {self.dividends.sum()}"# - {self.average_dividend_rate}"
+            return f"{self.core} - Dividends: {round(self.dividends.sum(), 2)}"# - {self.average_dividend_rate}"
 
 
 class allocation:

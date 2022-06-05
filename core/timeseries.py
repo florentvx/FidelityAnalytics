@@ -6,16 +6,17 @@ from numpy import average
 class timeseries:
     
     name:   str
-    _data:  dict[dt.date, float] = {}
+    _data:  dict[dt.date, float]
 
     def __init__(
         self, 
         name:   str, 
-        data:   dict[dt.date, float] = None,
+        _data:   dict[dt.date, float] = None,
         ):
         self.name = name
-        if not data is None:
-            self._data = data
+        self._data = {}
+        if not _data is None:
+            self._data = _data.copy()
 
     def size(self):
         return len(self._data)
@@ -26,8 +27,7 @@ class timeseries:
     def copy(self, new_name = None) -> timeseries:
         if new_name is None:
             new_name = self.name
-        res = { k: v for (k,v) in self._data.items() }
-        return timeseries(new_name, res)
+        return timeseries(new_name, self._data)
 
     def keys(self):
         res = list(self._data.keys())

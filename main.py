@@ -18,5 +18,7 @@ for asset_name in last_data.get_allocation_asset_list():
     asset_item : allocation_item = last_data.get_allocation_asset(asset_name)
     ts_div: timeseries = asset_item.dividends
     print(ts_div)
+    ts_div_rat: timeseries = asset_item.dividends_ratio
+    print(ts_div_rat)
 
 print("END")
