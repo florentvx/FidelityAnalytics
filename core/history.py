@@ -7,8 +7,11 @@ from .allocation import allocation, allocation_item
 
 class history_item:
     
+    # main attributes
     date:               dt.date
     alloc:              allocation
+
+    # keeping record of the last transaction
     tx_type:            transaction_type = transaction_type.START
     source_investment:  str = None
     asset:              asset = None
@@ -43,6 +46,8 @@ class history_item:
         alloc_item = self.alloc.get(self.asset.name)
         if not self.source_investment is None:
             alloc_item = self.alloc.get(self.source_investment, trigger_error = True)
+            # adding the cash amount into the 'Cash' asset
+            self.alloc.get("Cash", trigger_error=True).add_asset(self.date, self.tx_type, self.asset)
         alloc_item.add_asset(self.date, self.tx_type, self.asset)
         
     def __str__(self):

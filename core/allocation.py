@@ -33,8 +33,10 @@ class allocation_item:
         asset:      asset,
         ) -> None:
 
+        # update price timeseries (to move else where?)
         if asset.name != "Cash":
             self.prices.add(date, asset.price_per_unit)
+        
         if tx_type in [transaction_type.CASH_IN_LUMP_SUM, transaction_type.CASH_IN_REGULAR_SAVINGS_PLAN]:
             self.core.add_quantity(asset)
         elif tx_type in [transaction_type.DEALING_FEE, transaction_type.SERVICE_FEE]:
@@ -44,12 +46,14 @@ class allocation_item:
         elif tx_type == transaction_type.CASH_OUT_FOR_BUY:
             self.core.substract_quantity(asset)
         elif tx_type == transaction_type.CASH_DIVIDEND:
-            if self.core.name == "Cash":
-                raise ValueError("Dividends on cash ???")
             if asset.amount < 0:
                 raise ValueError("Negative dividends???")
-            self.dividends.add(date, asset.amount)
-            self.dividends_ratio.add(date, asset.amount / self.core.amount)
+            if self.core.name == "Cash":
+                self.core.add_quantity(asset)
+            else:
+                self.dividends.add(date, asset.amount)
+                self.dividends_ratio.add(date, asset.amount / self.core.amount)
+                #self.core.add_quantity(asset)
         elif tx_type in [transaction_type.CASH_IN_RING_FENCED_FOR_FEES, transaction_type.TRANSFER_TO_CASH_MANAGEMENT_ACCOUNT_FOR_FEES]:
             # fees are already registered as "service fee"
             pass
@@ -66,7 +70,7 @@ class allocation_item:
         return res
 
     def __str__(self):
-        if self.dividends.size() == 0:
+        if self.dividends.size == 0:
             return f"{self.core}"
         else:
             return f"{self.core} - Dividends: {round(self.dividends.sum(), 2)}"# - {self.average_dividend_rate}"
