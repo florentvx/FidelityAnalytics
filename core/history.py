@@ -112,6 +112,16 @@ class history_item:
 
         return 
 
+    def print_total_stats_report(self) -> None:
+        print("\nTOTAL")
+        print(f"total value      : £ {round(self.get_total_value(), 2)}")
+        print(f"total (w/o cash) : £ {round(self.get_total_value(include_cash=False), 2)}")
+        print(f"sum div.         : £ {round(self.get_dividends_total(), 2)}")
+        print(f"div. ratio       : {round(self.get_dividends_average_rate() * 100, 2)} %")
+        print(f"div. exp.        : £ {round(self.get_dividends_expectation(), 2)}")
+
+        return
+
     #endregion
 
     
