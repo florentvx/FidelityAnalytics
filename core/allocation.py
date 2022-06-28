@@ -23,9 +23,6 @@ class allocation_item:
         self.dividends_ratio = timeseries(f"{name}_DIV_RAT")
         self.prices = timeseries(f"{name}_PRICES")
 
-    def average_dividend_rate(self) -> float:
-        raise ValueError("not implemented")
-
     def add_asset(
         self,
         date:       dt.date,
@@ -74,6 +71,33 @@ class allocation_item:
             return f"{self.core}"
         else:
             return f"{self.core} - Dividends: {round(self.dividends.sum(), 2)}"# - {self.average_dividend_rate}"
+
+    # region statistics
+    
+    def get_dividends_total(self) -> float:
+        return self.dividends.sum()
+
+    def get_dividends_average_rate(self) -> float:
+        return self.dividends_ratio.average() * 4
+    
+    def get_dividends_expectation(self) -> float:
+        # the div average ratio is assumed to be quarterly
+        return self.get_dividends_average_rate() * self.core.amount
+    
+    def print_stats_report(self) -> None:
+        print(f"asset: {self.core.name}")
+        print(f"last price / quantity / amount: " +\
+            f"{round(self.core.price_per_unit, 4)} / " +
+            f"{round(self.core.quantity, 2)} / " +\
+            f"{round(self.core.amount, 2)}"
+        )
+        print(f"sum dividends: £ {round(self.get_dividends_total())}")
+        print(f"dividends ratio: {round(self.get_dividends_average_rate() * 100, 2)} %")
+        print(f"dividends expected: £ {round(self.get_dividends_expectation(), 2)}")
+
+        return
+
+    #endregion
 
 
 class allocation:

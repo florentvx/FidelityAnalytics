@@ -28,7 +28,7 @@ class history_item:
             self.alloc = alloc.copy()
 
     def get_allocation_asset_list(self) -> list[str]:
-        return self.alloc.keys()
+        return list(self.alloc.keys())
 
     def get_allocation_asset(self, name: str) -> allocation_item:
         return self.alloc.get(name, trigger_error=True)
@@ -55,6 +55,65 @@ class history_item:
         if not self.asset is None:
             asset_log = f"\ntraded asset : {self.asset}"
         return f"{self.date} - {self.tx_type.name} :{asset_log} \n{self.alloc}"
+
+    # region statistics
+
+    def get_total_value(self, name: str = None, include_cash : bool = True) -> float:
+        items = self.get_allocation_asset_list()
+        if not name is None:
+            items = [name]
+
+        return sum([
+            self.get_allocation_asset(n).core.amount
+            for n in items
+            if not n == "Cash" or include_cash
+        ])
+        
+    def get_dividends_total(self, name: str = None) -> float:
+        items = self.get_allocation_asset_list()
+        if not name is None:
+            items = [name]
+
+        return sum([
+            self.get_allocation_asset(n).get_dividends_total()
+            for n in items
+            if not n == "Cash"
+        ])
+
+    def get_dividends_expectation(self, name: str = None) -> float:
+        items = self.get_allocation_asset_list()
+        if not name is None:
+            items = [name]
+        
+        return sum([
+            self.get_allocation_asset(n).get_dividends_average_rate() * self.get_allocation_asset(n).core.amount
+            for n in items
+            if n != "Cash"
+        ])
+
+    def get_dividends_average_rate(self, name: str = None) -> float:
+        items = self.get_allocation_asset_list()
+        if not name is None:
+            items = [name]
+        
+        return self.get_dividends_expectation(name) / self.get_total_value(name, include_cash=False)
+    
+    def print_stats_report(self, name : str = None) -> None:
+        items = self.get_allocation_asset_list()
+        if not name is None:
+            items = [name]
+        
+        print(" ")
+        print(f"STATS REPORT {self.date}")
+        for n in items:
+            print(" - ")
+            self.get_allocation_asset(n).print_stats_report()
+        print(" ")
+
+        return 
+
+    #endregion
+
     
 class history:
     _data : list[history_item]
