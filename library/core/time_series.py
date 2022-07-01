@@ -35,6 +35,9 @@ class timeseries:
         res.sort()
         return res
     
+    def values(self):
+        return [self.get(d) for d in self.keys()]
+
     def first(self):
         first_date = self.keys()[0]
         return first_date, self._data[first_date] 
@@ -74,3 +77,27 @@ class timeseries:
         for x in self.keys():
             res += f"\n {x} -> {self._data[x]}"
         return res
+
+def adjust_timeseries_by_coverage(
+    ts: timeseries,
+    override_name: str = None
+    ) -> timeseries:
+    
+    new_name = ts.name + ""
+    if not override_name is None:
+        new_name = override_name
+    
+    new_ts = {}
+    if ts.size > 0:
+        keys = ts.keys()
+        if ts.size == 1:
+            new_ts[ts.get_last_date()] = ts.get_last_value() * 4.0
+        else:
+            last_coverage = 0
+            for i in range(0, len(keys) - 1):
+                last_coverage = (keys[i+1]-keys[i]).days / 365.0
+                new_ts[keys[i]] = ts.get(keys[i]) / last_coverage
+            new_ts[ts.get_last_date()] = ts.get_last_value() / last_coverage
+    
+    return timeseries(override_name, new_ts)
+

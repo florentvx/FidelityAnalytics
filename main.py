@@ -12,6 +12,30 @@ last_data.print_stats_report()
 
 last_data.print_total_stats_report()
 
-plot_timeseries(last_data.get_allocation_asset("ISHARES, FTSE 250 UCITS ETF GBP DIST (MIDD)").dividends_ratio)
+for asset_name in last_data.get_allocation_asset_list():
+
+    asset_selected = last_data.get_allocation_asset(asset_name)
+
+    plot_timeseries(
+        [
+            adjust_timeseries_by_coverage(
+                asset_selected.dividends_ratio,
+                override_name="div_rat_yr",
+            ),
+            asset_selected.prices,
+        ],
+        [
+            plot_info(
+                plt_type = plot_type.SCATTER, 
+                y = y_axis.LEFT,
+                color = "blue",
+            ),
+            plot_info(
+                plt_type = plot_type.LINE,
+                color = "red",
+            ),
+        ],
+        asset_name,
+    )
 
 print("\nEND")
