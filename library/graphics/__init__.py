@@ -1,2 +1,2 @@
 from .plot_info import *
-from .plot import plot_timeseries
+from .plot import plt, plot_timeseries

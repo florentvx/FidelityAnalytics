@@ -38,5 +38,5 @@ def plot_timeseries(
             raise ValueError(f"unknown plot type: {my_info.type}")
 
     plt.show()
-    plt.close()
+    #plt.close()
     print(f"{my_ts.size}")

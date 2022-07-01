@@ -11,7 +11,10 @@ def convert_numpy_nan(x):
         return None
     return x
 
-def get_fidelity_data(csv_path: str) -> history:
+def get_fidelity_data(
+    csv_path: str,
+    print_steps: bool = False,
+    ) -> history:
     
     data = pd.read_csv(csv_path)
     new_data = pd.DataFrame()
@@ -49,6 +52,7 @@ def get_fidelity_data(csv_path: str) -> history:
             row['transaction_type'], 
             row["source_investment"],
             row['asset'],
+            print_step = print_steps
         )
 
     return hist_data

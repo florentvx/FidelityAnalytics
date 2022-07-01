@@ -160,6 +160,7 @@ class history:
         tx_type:            transaction_type,
         source_investment:  str,
         asset:              asset,
+        print_step:         bool = False,
         ) -> None:
         
         if date < self.get_last().date:
@@ -168,7 +169,8 @@ class history:
         prev_item : history_item = self._data[-1]
         new_item = history_item(date, prev_item.alloc)
         new_item.add_asset(tx_type, source_investment, asset)
-        print(f"\n{new_item}")
+        if print_step:
+            print(f"\n{new_item}")
         self._data += [new_item]
 
     
