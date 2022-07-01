@@ -4,7 +4,7 @@ import datetime as dt
 
 from .transaction_type import transaction_type
 from .asset import asset
-from .timeseries import timeseries
+from .time_series import timeseries
 
 class allocation_item:
     

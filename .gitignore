@@ -1,2 +1,4 @@
 data/
-core/__pycache__/
+library/__pycache__/
+library/core/__pycache__/
+library/graphics/__pycache__/
