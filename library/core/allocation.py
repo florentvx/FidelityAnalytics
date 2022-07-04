@@ -18,7 +18,7 @@ class allocation_item:
         name: str,
         ):
 
-        self.core = asset(name, 0, 0, 0)
+        self.core = asset(name, 0, 0, 0, 0)
         self.dividends = timeseries(f"{name}_DIV")
         self.dividends_ratio = timeseries(f"{name}_DIV_RAT")
         self.prices = timeseries(f"{name}_PRICES")
@@ -87,10 +87,16 @@ class allocation_item:
     def print_stats_report(self) -> None:
         print(f"asset: {self.core.name}")
         print(f"last price / quantity / amount: " +\
-            f"{round(self.core.price_per_unit, 4)} / " +
+            f"{round(self.core.market_price, 4)} / " +
             f"{round(self.core.quantity, 2)} / " +\
             f"{round(self.core.amount, 2)}"
         )
+        print(
+            f"purchased price: {round(self.core.price_per_unit, 2)} " + \
+            f"({100 * round(self.core.market_price / self.core.price_per_unit - 1, 4)} %) " + \
+            f" -> PnL: £ {round(self.core.quantity * (self.core.market_price - self.core.price_per_unit), 2)}"
+        )
+
         print(f"sum dividends: £ {round(self.get_dividends_total())}")
         print(f"dividends ratio: {round(self.get_dividends_average_rate() * 100, 2)} %")
         print(f"dividends expected: £ {round(self.get_dividends_expectation(), 2)}")

@@ -32,7 +32,8 @@ def get_fidelity_data(
                 row["Investments"], 
                 row["Amount"], 
                 row["Quantity"], 
-                row["Price per unit"]
+                row["Price per unit"],
+                row["Price per unit"],
             ), 
         axis = 1
     )

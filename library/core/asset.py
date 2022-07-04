@@ -13,6 +13,7 @@ class asset:
         name:               str, 
         amount:             float, 
         quantity:           float, 
+        market_price:       float,
         price_per_unit:     float, 
         fees:               float= 0.0
         ):
@@ -21,7 +22,7 @@ class asset:
         self.price_per_unit = price_per_unit
         if price_per_unit == 0:
             self.price_per_unit = 1.0
-        self.market_price = self.price_per_unit
+        self.market_price = market_price
         if quantity == 0:
             self.quantity = amount
         else:
@@ -80,8 +81,9 @@ class asset:
             self.name,
             self.amount,
             self.quantity,
+            self.market_price,
             self.price_per_unit,
-            self.fees
+            self.fees,
         )
 
     def __str__(self):
