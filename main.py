@@ -1,7 +1,9 @@
 from library import *
 
-my_path = r'C:\Users\flore\source\repos\FidelityAnalytics\data\TransactionHistory_20220603.csv'
+user= "florent_vassaux"
+date_csv = dt.date(2022, 6, 3)
 
+my_path = get_csv_path(user, date_csv)
 fidelity_data = get_fidelity_data(my_path, print_steps = False)
 
 last_data = fidelity_data.get_last()
