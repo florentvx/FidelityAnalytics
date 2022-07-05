@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import datetime as dt
+import csv
 
 from .transaction_type import get_transation_type
 from .asset import asset
@@ -9,6 +10,8 @@ from .history import history
 def convert_numpy_nan(x):
     if x is np.nan:
         return None
+    if x == '':
+        return None
     return x
 
 def get_fidelity_data(
@@ -16,7 +19,17 @@ def get_fidelity_data(
     print_steps: bool = False,
     ) -> history:
     
-    data = pd.read_csv(csv_path)
+    data_csv = None
+    with open(csv_path, newline='') as csv_file:
+        reader_csv = csv.reader(csv_file, delimiter=',')
+        data_csv = [row for row in reader_csv]
+    last_line_len = len(data_csv[-1])
+    data_csv = [row for row in data_csv if len(row) == last_line_len]
+    data = pd.DataFrame(
+        data_csv[1:],
+        columns=data_csv[0],
+    )
+    
     new_data = pd.DataFrame()
     
     # date
@@ -29,11 +42,11 @@ def get_fidelity_data(
     new_data["asset"] = data.apply(
         lambda row: 
             asset(
-                row["Investments"], 
-                row["Amount"], 
-                row["Quantity"], 
-                row["Price per unit"],
-                row["Price per unit"],
+                str(row["Investments"]), 
+                float(row["Amount"]), 
+                float(row["Quantity"]),
+                float(row["Price per unit"]),
+                float(row["Price per unit"]),
             ), 
         axis = 1
     )

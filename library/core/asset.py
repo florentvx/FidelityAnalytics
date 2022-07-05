@@ -1,4 +1,5 @@
 from __future__ import annotations
+from multiprocessing.sharedctypes import Value
 
 class asset:
     
@@ -19,14 +20,29 @@ class asset:
         ):
 
         self.name = name
-        self.price_per_unit = price_per_unit
-        if price_per_unit == 0:
-            self.price_per_unit = 1.0
-        self.market_price = market_price
+        
+        # quantity
         if quantity == 0:
             self.quantity = amount
         else:
             self.quantity = quantity
+        
+        # average-buy price
+        self.price_per_unit = price_per_unit
+        if price_per_unit == 0:
+            if self.name == "Cash" or self.quantity == 0.0:
+                self.price_per_unit = 1.0
+            else:
+                raise ValueError()
+        
+        # market price
+        self.market_price = market_price
+        if market_price == 0:
+            if self.name == "Cash" or self.quantity == 0.0:
+                self.market_price = 1.0
+            else:
+                raise ValueError()
+        
         self.fees = fees
         if name == "Cash" and abs(amount + quantity * self.price_per_unit) < 0.01:
             self.quantity *= -1
