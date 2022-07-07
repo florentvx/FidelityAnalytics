@@ -1,4 +1,5 @@
 from library import *
+import jinja2
 
 user= "florent_vassaux"
 date_csv = dt.date(2022, 6, 3)
@@ -42,4 +43,19 @@ for asset_name in last_data.get_allocation_asset_list():
         )
 
 plt.close()
+
+# write data into html page
+
+jfsl = jinja2.FileSystemLoader(searchpath="./library/template/")
+tmp_env = jinja2.Environment(loader=jfsl)
+template = tmp_env.get_template("my_template.jinja")
+output = template.render(
+    {
+        'user_name': user,
+        'date': get_date_to_string(date_csv, "/"),
+    }
+)
+with open("./output.html", "w") as text_file:
+    text_file.write(output)
+
 print("\nEND")

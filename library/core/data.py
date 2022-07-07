@@ -7,6 +7,18 @@ from .transaction_type import get_transation_type
 from .asset import asset
 from .history import history
 
+def get_date_to_string(
+    date_csv:   dt.date,
+    delimeter:  str = "",
+    ):
+    date_month = str(date_csv.month)
+    if date_csv.month < 10:
+        date_month = "0" + date_month
+    date_day = str(date_csv.day)
+    if date_csv.day < 10:
+        date_day = "0" + date_day
+    return f"{date_csv.year}{delimeter}{date_month}{delimeter}{date_day}"
+
 def get_csv_path(
     user:           str,
     date_csv:       dt.date,
@@ -18,13 +30,8 @@ def get_csv_path(
         mf = r'C:\Users\flore\OneDrive\Documents\FidelityData'
     if name is None:
         name = "TransactionHistory"
-    date_month = str(date_csv.month)
-    if date_csv.month < 10:
-        date_month = "0" + date_month
-    date_day = str(date_csv.day)
-    if date_csv.day < 10:
-        date_day = "0" + date_day
-    return mf + f"\\{user}\\{name}_{date_csv.year}{date_month}{date_day}.csv"
+    
+    return mf + f"\\{user}\\{name}_{get_date_to_string(date_csv)}.csv"
 
 def convert_numpy_nan(x):
     if x is np.nan:
