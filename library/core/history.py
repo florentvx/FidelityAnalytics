@@ -1,6 +1,8 @@
 from __future__ import annotations
 import datetime as dt
 
+from numpy import average
+
 from .transaction_type import transaction_type
 from .asset import asset
 from .allocation import allocation, allocation_item
@@ -96,7 +98,11 @@ class history_item:
         if not name is None:
             items = [name]
         
-        return self.get_dividends_expectation(name) / self.get_total_value(name, include_cash=False)
+        return average([
+            self.get_dividends_expectation(n) / self.get_total_value(n, include_cash=False)
+            for n in items
+            if n != "Cash"
+        ])
     
     def print_stats_report(self, name : str = None) -> None:
         items = self.get_allocation_asset_list()
