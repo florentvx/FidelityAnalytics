@@ -1,49 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
+
+<style>
+    table, th, td {
+        border:1px solid black;
+        border-collapse: collapse;
+    }
+</style>
+
 <head>
     <title>Fidelity Analytics</title>
     {# meta data displayed in header's bar of internet navigator #}
 </head>
+
 <body>
     <h1>Fidelity Analytics</h1>
     User: {{ user_name }}<br>
     Date: {{ date }}<br>
     
     <br>
-    --------------- <br>
-    <br>
+    ---------------
 
-    {# total stats #}
+    <h2>Total Statistics</h2>
+
+    <table style="width:100%">
+        <tr>
+            <th>Total</th>
+            <th>Total Cash</th>
+            <th>Total Assets</th>
+            <th>Dividends Sum</th>
+            <th>Dividends Ratio</th>
+            <th>Dividends Expected</th>
+        </tr>
+        <tr>
+            <td>{{ total_data.total_value }}</td>
+            <td>{{ total_data.total_cash }}</td>
+            <td>{{ total_data.total_assets }}</td>             
+            <td>{{ total_data.dividends_sum }}</td>
+            <td>{{ total_data.dividends_ratio }}</td>
+            <td>{{ total_data.dividends_expectation }}</td>
+        </tr>
+    </table>
     
-    Total Value {{ total_data.total_value }} <br>
-    Total Value Without Cash {{ total_data.total_without_cash }} <br> 
-    dividends sum {{ total_data.dividends_sum }} <br>
-    dividends ratio {{ total_data.dividends_ratio }} <br>
-    dividends expected {{ total_data.dividends_expectation }} <br>
-
     <br>
-    --------------- <br>
-    <br>
+    ---------------
 
-    {# stats #}
-    {% for item in data -%}
-    
-        Name {{ data[item].name }} <br>
-        Market Price {{ data[item].market_price }} <br>
-        Quantity {{ data[item].quantity }} <br>
-        Amount {{ data[item].amount }} <br>
-        Purchased price {{ data[item].purchased_price }} <br>
-        return {{ data[item].return }} <br>
-        pnl {{ data[item].pnl }} <br>
-        dividends sum {{ data[item].dividends_sum }} <br>
-        dividends ratio {{ data[item].dividends_ratio }} <br>
-        dividends expected {{ data[item].dividends_expectation }} <br>
-        
-        <br>
-        ---------------<br>
-        <br>
+    <h2>Asset Statistics</h2>
 
-    {% endfor %}
+    <table style="width:100%">
+        <tr>
+            <th>Name</th>
+            <th>Market Price</th>
+            <th>Quantity</th>
+            <th>Amount</th>
+            <th>Purchased Price</th>
+            <th>Return</th>
+            <th>PnL</th>
+            <th>Dividends Sum</th>
+            <th>Dividends Ratio</th>
+            <th>Dividends Expected</th>
+        </tr>
+
+        {% for item in data -%}
+            <tr>
+                <td>{{ data[item].name }}</td>
+                <td>{{ data[item].market_price }}</td>
+                <td>{{ data[item].quantity }}</td>
+                <td>{{ data[item].amount }}</td>
+                <td>{{ data[item].purchased_price }}</td>
+                <td>{{ data[item].return }}</td>
+                <td>{{ data[item].pnl }}</td>
+                <td>{{ data[item].dividends_sum }}</td>
+                <td>{{ data[item].dividends_ratio }}</td>
+                <td>{{ data[item].dividends_expectation }}</td>
+            </tr>
+        {% endfor %}
+    </table>
     
 
 </body>

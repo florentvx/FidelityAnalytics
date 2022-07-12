@@ -121,12 +121,15 @@ class history_item:
         return 
 
     def get_dict_total_stat_report(self) -> None:
+        total_value = self.get_total_value()
+        total_asset = self.get_total_value(include_cash=False)
         return {
-            "total_value"           : f"{format_amount(self.get_total_value())}",
-            "total_without_cash"    : f"{format_amount(self.get_total_value(include_cash=False))}",
-            "dividends_sum"         : f"{format_amount(self.get_dividends_total())}",
-            "dividends_ratio"       : f"{format_percentage(self.get_dividends_average_rate())}",
-            "dividends_expectation":    format_amount(self.get_dividends_expectation()),
+            "total_value"           : format_amount(total_value),
+            "total_cash"            : format_amount(total_value - total_asset),
+            "total_assets"          : format_amount(total_asset),
+            "dividends_sum"         : format_amount(self.get_dividends_total()),
+            "dividends_ratio"       : format_percentage(self.get_dividends_average_rate()),
+            "dividends_expectation" : format_amount(self.get_dividends_expectation()),
         }
 
     def get_dict_stat_report(self):
@@ -139,7 +142,7 @@ class history_item:
         tot_stat_report = self.get_dict_total_stat_report()
         print("\ntotal")
         print(f"total value      : {tot_stat_report['total_value']}")
-        print(f"total (w/o cash) : {tot_stat_report['total_without_cash']}")
+        print(f"total (w/o cash) : {tot_stat_report['total_assets']}")
         print(f"sum div.         : {tot_stat_report['dividends_sum']}")
         print(f"div. ratio       : {tot_stat_report['dividends_ratio']}")
         print(f"div. exp.        : {tot_stat_report['dividends_expectation']}")
