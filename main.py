@@ -42,7 +42,7 @@ for asset_name in last_data.get_allocation_asset_list():
             asset_name,
         )
 
-plt.close()
+plt.close("all")
 
 # write data into html page
 
@@ -53,6 +53,7 @@ output = template.render(
     {
         'user_name': user,
         'date': get_date_to_string(date_csv, "/"),
+        'data': last_data.get_dict_stat_report()
     }
 )
 with open("./output.html", "w") as text_file:

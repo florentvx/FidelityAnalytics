@@ -128,6 +128,12 @@ class history_item:
 
         return
 
+    def get_dict_stat_report(self):
+        return {
+            key: self.get_allocation_asset(key).get_dict_stat_report()
+            for key in self.get_allocation_asset_list()
+        }
+
     #endregion
 
     

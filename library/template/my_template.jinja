@@ -2,12 +2,34 @@
 <html lang="en">
 <head>
     <title>Fidelity Analytics</title>
-    {# comment: meta data not displayed #}
+    {# meta data displayed in header's bar of internet navigator #}
 </head>
 <body>
     <h1>Fidelity Analytics</h1>
     User: {{ user_name }}<br>
     Date: {{ date }}<br>
-    {# a comment #}
+    
+    --------------- <br>
+
+    {# stats #}
+    {% for item in data -%}
+
+        <br>
+        Name {{ data[item].name }} <br>
+        Market Price {{ data[item].market_price }} <br>
+        Quantity {{ data[item].quantity }} <br>
+        Amount {{ data[item].amount }} <br>
+        Purchased price {{ data[item].purchased_price }} <br>
+        return {{ data[item].return }} <br>
+        pnl {{ data[item].pnl }} <br>
+        div sum {{ data[item].dividends_sum }} <br>
+        div ratio {{ data[item].dividends_ratio }} <br>
+        div expected {{ data[item].dividends_expectation }} <br>
+        <br>
+        ---------------<br>
+
+    {% endfor %}
+    
+
 </body>
 </html>

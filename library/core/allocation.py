@@ -103,6 +103,20 @@ class allocation_item:
 
         return
 
+    def get_dict_stat_report(self):
+        return {
+            "name":                     self.core.name,
+            "market_price":             self.core.market_price,
+            "quantity":                 self.core.quantity,
+            "amount":                   self.core.amount,
+            "purchased_price":          self.core.price_per_unit,
+            "return":                   (self.core.market_price / self.core.price_per_unit - 1),
+            "pnl":                      self.core.quantity * (self.core.market_price - self.core.price_per_unit),
+            "dividends_sum":            self.get_dividends_total(),
+            "dividends_ratio":          self.get_dividends_average_rate(),
+            "dividends_expectation":    self.get_dividends_expectation(),
+        }
+
     #endregion
 
 
