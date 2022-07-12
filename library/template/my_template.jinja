@@ -76,6 +76,15 @@
             </tr>
         {% endfor %}
     </table>
+
+    ---------------
+
+    <h2>Graphs</h2>
+    
+    {% for plt in plots -%}
+        <img src="{{plt}}"><br>
+    {% endfor %}
+    
     
 
 </body>

@@ -37,5 +37,7 @@ def plot_timeseries(
         else:
             raise ValueError(f"unknown plot type: {my_info.type}")
 
+    path = f"images/{title}.png"
+    fig.savefig(path)
     plt.show()
-    return
+    return path
