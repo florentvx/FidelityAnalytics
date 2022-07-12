@@ -5,6 +5,7 @@ import datetime as dt
 from .transaction_type import transaction_type
 from .asset import asset
 from .time_series import timeseries
+from .format import *
 
 class allocation_item:
     
@@ -84,38 +85,43 @@ class allocation_item:
         # the div average ratio is assumed to be quarterly
         return self.get_dividends_average_rate() * self.core.amount
     
+    def get_dict_stat_report(self):
+        dp = 0
+        if self.core.name == "Cash":
+            dp = 2
+        return {
+            "name":                     self.core.name,
+            "market_price":             format_amount(self.core.market_price, decimal_precision=4),
+            "quantity":                 format_number(self.core.quantity, decimal_precision=dp),
+            "amount":                   format_amount(self.core.amount),
+            "purchased_price":          format_amount(self.core.price_per_unit, decimal_precision=4),
+            "return":                   format_percentage((self.core.market_price / self.core.price_per_unit - 1)),
+            "pnl":                      format_amount(self.core.quantity * (self.core.market_price - self.core.price_per_unit)),
+            "dividends_sum":            format_amount(self.get_dividends_total()),
+            "dividends_ratio":          format_percentage(self.get_dividends_average_rate()),
+            "dividends_expectation":    format_amount(self.get_dividends_expectation()),
+        }
+
     def print_stats_report(self) -> None:
-        print(f"asset: {self.core.name}")
-        print(f"last price / quantity / amount: " +\
-            f"{round(self.core.market_price, 4)} / " +
-            f"{round(self.core.quantity, 2)} / " +\
-            f"{round(self.core.amount, 2)}"
+        stat_report = self.get_dict_stat_report()
+        print(f"asset: {stat_report['name']}")
+        print(
+            f"last price / quantity / amount: " +\
+            f"{stat_report['market_price']} / {stat_report['quantity']} / {stat_report['amount']}"
         )
         print(
-            f"purchased price: {round(self.core.price_per_unit, 2)} " + \
-            f"({100 * round(self.core.market_price / self.core.price_per_unit - 1, 4)} %) " + \
-            f" -> PnL: £ {round(self.core.quantity * (self.core.market_price - self.core.price_per_unit), 2)}"
+            f"purchased price: {stat_report['purchased_price']} " + \
+            f"({stat_report['return']}) " + \
+            f" -> PnL: {stat_report['pnl']}"
         )
 
-        print(f"sum dividends: £ {round(self.get_dividends_total())}")
-        print(f"dividends ratio: {round(self.get_dividends_average_rate() * 100, 2)} %")
-        print(f"dividends expected: £ {round(self.get_dividends_expectation(), 2)}")
+        print(f"sum dividends: {stat_report['dividends_sum']}")
+        print(f"dividends ratio: {stat_report['dividends_ratio']}")
+        print(f"dividends expected: {stat_report['dividends_expectation']}")
 
         return
 
-    def get_dict_stat_report(self):
-        return {
-            "name":                     self.core.name,
-            "market_price":             self.core.market_price,
-            "quantity":                 self.core.quantity,
-            "amount":                   self.core.amount,
-            "purchased_price":          self.core.price_per_unit,
-            "return":                   (self.core.market_price / self.core.price_per_unit - 1),
-            "pnl":                      self.core.quantity * (self.core.market_price - self.core.price_per_unit),
-            "dividends_sum":            self.get_dividends_total(),
-            "dividends_ratio":          self.get_dividends_average_rate(),
-            "dividends_expectation":    self.get_dividends_expectation(),
-        }
+    
 
     #endregion
 

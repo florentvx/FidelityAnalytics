@@ -3,6 +3,8 @@ import datetime as dt
 
 from numpy import average
 
+from library.core.format import format_amount, format_percentage
+
 from .transaction_type import transaction_type
 from .asset import asset
 from .allocation import allocation, allocation_item
@@ -118,21 +120,30 @@ class history_item:
 
         return 
 
-    def print_total_stats_report(self) -> None:
-        print("\nTOTAL")
-        print(f"total value      : £ {round(self.get_total_value(), 2)}")
-        print(f"total (w/o cash) : £ {round(self.get_total_value(include_cash=False), 2)}")
-        print(f"sum div.         : £ {round(self.get_dividends_total(), 2)}")
-        print(f"div. ratio       : {round(self.get_dividends_average_rate() * 100, 2)} %")
-        print(f"div. exp.        : £ {round(self.get_dividends_expectation(), 2)}")
-
-        return
+    def get_dict_total_stat_report(self) -> None:
+        return {
+            "total_value"           : f"{format_amount(self.get_total_value())}",
+            "total_without_cash"    : f"{format_amount(self.get_total_value(include_cash=False))}",
+            "dividends_sum"         : f"{format_amount(self.get_dividends_total())}",
+            "dividends_ratio"       : f"{format_percentage(self.get_dividends_average_rate())}",
+            "dividends_expectation":    format_amount(self.get_dividends_expectation()),
+        }
 
     def get_dict_stat_report(self):
         return {
             key: self.get_allocation_asset(key).get_dict_stat_report()
             for key in self.get_allocation_asset_list()
         }
+
+    def print_total_stats_report(self) -> None:
+        tot_stat_report = self.get_dict_total_stat_report()
+        print("\ntotal")
+        print(f"total value      : {tot_stat_report['total_value']}")
+        print(f"total (w/o cash) : {tot_stat_report['total_without_cash']}")
+        print(f"sum div.         : {tot_stat_report['dividends_sum']}")
+        print(f"div. ratio       : {tot_stat_report['dividends_ratio']}")
+        print(f"div. exp.        : {tot_stat_report['dividends_expectation']}")
+        return
 
     #endregion
 

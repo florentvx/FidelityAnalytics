@@ -9,12 +9,25 @@
     User: {{ user_name }}<br>
     Date: {{ date }}<br>
     
+    <br>
     --------------- <br>
+    <br>
+
+    {# total stats #}
+    
+    Total Value {{ total_data.total_value }} <br>
+    Total Value Without Cash {{ total_data.total_without_cash }} <br> 
+    dividends sum {{ total_data.dividends_sum }} <br>
+    dividends ratio {{ total_data.dividends_ratio }} <br>
+    dividends expected {{ total_data.dividends_expectation }} <br>
+
+    <br>
+    --------------- <br>
+    <br>
 
     {# stats #}
     {% for item in data -%}
-
-        <br>
+    
         Name {{ data[item].name }} <br>
         Market Price {{ data[item].market_price }} <br>
         Quantity {{ data[item].quantity }} <br>
@@ -22,11 +35,13 @@
         Purchased price {{ data[item].purchased_price }} <br>
         return {{ data[item].return }} <br>
         pnl {{ data[item].pnl }} <br>
-        div sum {{ data[item].dividends_sum }} <br>
-        div ratio {{ data[item].dividends_ratio }} <br>
-        div expected {{ data[item].dividends_expectation }} <br>
+        dividends sum {{ data[item].dividends_sum }} <br>
+        dividends ratio {{ data[item].dividends_ratio }} <br>
+        dividends expected {{ data[item].dividends_expectation }} <br>
+        
         <br>
         ---------------<br>
+        <br>
 
     {% endfor %}
     

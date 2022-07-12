@@ -52,8 +52,9 @@ template = tmp_env.get_template("my_template.jinja")
 output = template.render(
     {
         'user_name': user,
-        'date': get_date_to_string(date_csv, "/"),
-        'data': last_data.get_dict_stat_report()
+        'date':         get_date_to_string(date_csv, "/"),
+        'total_data':   last_data.get_dict_total_stat_report(),
+        'data':         last_data.get_dict_stat_report(),
     }
 )
 with open("./output.html", "w") as text_file:
