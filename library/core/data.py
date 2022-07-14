@@ -20,18 +20,24 @@ def get_date_to_string(
     return f"{date_csv.year}{delimeter}{date_month}{delimeter}{date_day}"
 
 def get_csv_path(
-    user:           str,
+    main_folder:    str,
     date_csv:       dt.date,
-    main_folder:    str = None,
+    user_name:      str,
     name:           str = None,
     ):
-    mf = main_folder
-    if main_folder is None:
-        mf = r'C:\Users\flore\OneDrive\Documents\FidelityData'
     if name is None:
         name = "TransactionHistory"
-    
-    return mf + f"\\{user}\\{name}_{get_date_to_string(date_csv)}.csv"
+    return main_folder + f"\\data\\{name}_{user_name}_{get_date_to_string(date_csv)}.csv"
+
+def get_html_path(
+    main_folder:    str,
+    date_csv:       dt.date,
+    user_name:      str,
+    name:           str = None,
+    ):
+    if name is None:
+        name = "FidelityAnalytics"
+    return main_folder + f"\\pages\\{name}_{user_name}_{get_date_to_string(date_csv)}.html"
 
 def convert_numpy_nan(x):
     if x is np.nan:

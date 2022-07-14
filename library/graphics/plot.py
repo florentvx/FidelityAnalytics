@@ -8,13 +8,19 @@ def plot_timeseries(
     my_ts_list: list[timeseries], 
     my_plt_info : list[plot_info],
     title: str = None,
-    ):
+    main_folder: str = None,
+    show: bool = True,
+    ) -> str:
+
+    """
+    returns the output path
+    """
 
     if len(my_ts_list) != len(my_plt_info):
         raise ValueError(f"list does not match size {len(my_ts_list)} {len(my_plt_info)}")
 
     
-    fig, ax1 = plt.subplots()
+    fig, ax1 = plt.subplots(figsize=(15, 5))
     ax1.set_title(title)
     ax2 = ax1.twinx()
 
@@ -37,7 +43,15 @@ def plot_timeseries(
         else:
             raise ValueError(f"unknown plot type: {my_info.type}")
 
-    path = f"images/{title}.png"
-    fig.savefig(path)
-    plt.show()
+    path = None
+    if not main_folder is None:
+        if main_folder == "":
+            path = f"images\\{title}.png"
+        else:
+            path = f"{main_folder}\\images\\{title}.png"
+        fig.savefig(path)
+    
+    if show:
+        plt.show()
+    
     return path

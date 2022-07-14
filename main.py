@@ -1,11 +1,15 @@
 from library import *
 import jinja2
 
-user= "florent_vassaux"
-date_csv = dt.date(2022, 6, 3)
+main_folder = r'C:\Users\flore\GoogleDrive\Fidelity'
 
-my_path = get_csv_path(user, date_csv)
-fidelity_data = get_fidelity_data(my_path, print_steps = False)
+user= "florent_vassaux"
+date_csv = dt.date(2022, 7, 12)
+
+main_folder_user = f"{main_folder}\\{user}"
+
+my_csv_path = get_csv_path(main_folder_user, date_csv, user)
+fidelity_data = get_fidelity_data(my_csv_path, print_steps=False)
 
 last_data = fidelity_data.get_last()
 
@@ -43,6 +47,8 @@ for asset_name in last_data.get_allocation_asset_list():
                     ),
                 ],
                 asset_name,
+                main_folder=main_folder_user,
+                show=False,
             )
         ]
 
@@ -62,7 +68,7 @@ output = template.render(
         'plots':        plots,
     }
 )
-with open("./output.html", "w") as text_file:
+with open(get_html_path(main_folder_user, date_csv, user), "w") as text_file:
     text_file.write(output)
 
 print("\nEND")
