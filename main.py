@@ -4,7 +4,7 @@ import jinja2
 main_folder = r'C:\Users\flore\GoogleDrive\Fidelity'
 
 user= "florent_vassaux"
-date_csv = dt.date(2022, 7, 12)
+date_csv = dt.date(2022, 7, 14)
 
 main_folder_user = f"{main_folder}\\{user}"
 

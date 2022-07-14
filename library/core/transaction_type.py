@@ -12,6 +12,9 @@ class transaction_type(Enum):
     TRANSFER_TO_CASH_MANAGEMENT_ACCOUNT_FOR_FEES    = 8     # transfer to pay "cash in ring-fenced for fees"
     CASH_IN_RING_FENCED_FOR_FEES                    = 9     # payment in special accout to pay for service fees
     CASH_IN_LUMP_SUM                                = 10    # simple cash deposit
+    SELL                                            = 11    # sell a given asset
+    CASH_IN_FROM_SELL                               = 12    # cash received from sale
+    WITHDRAWAL                                      = 13    # withdraw money from fidelity
 
 
 def get_transation_type(x : str):

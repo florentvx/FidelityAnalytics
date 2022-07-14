@@ -35,13 +35,13 @@ class allocation_item:
         if asset.name != "Cash":
             self.prices.add(date, asset.price_per_unit)
         
-        if tx_type in [transaction_type.CASH_IN_LUMP_SUM, transaction_type.CASH_IN_REGULAR_SAVINGS_PLAN]:
+        if tx_type in [transaction_type.CASH_IN_LUMP_SUM, transaction_type.CASH_IN_REGULAR_SAVINGS_PLAN, transaction_type.CASH_IN_FROM_SELL]:
             self.core.add_quantity(asset)
         elif tx_type in [transaction_type.DEALING_FEE, transaction_type.SERVICE_FEE]:
             self.core.add_fee(asset)
         elif tx_type in [transaction_type.BUY, transaction_type.BUY_FROM_REGULAR_SAVINGS_PLAN]:
             self.core.add_buy_transaction(asset)
-        elif tx_type == transaction_type.CASH_OUT_FOR_BUY:
+        elif tx_type in [transaction_type.CASH_OUT_FOR_BUY, transaction_type.SELL, transaction_type.WITHDRAWAL]:
             self.core.substract_quantity(asset)
         elif tx_type == transaction_type.CASH_DIVIDEND:
             if asset.amount < 0:
