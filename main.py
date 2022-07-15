@@ -68,7 +68,19 @@ output = template.render(
         'plots':        plots,
     }
 )
-with open(get_html_path(main_folder_user, date_csv, user), "w") as text_file:
+
+html_path = get_html_path(main_folder_user, date_csv, user)
+
+with open(html_path, "w") as text_file:
     text_file.write(output)
+
+# convert html to pdf
+
+import pdfkit
+path_wkthmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
+config = pdfkit.configuration(wkhtmltopdf=path_wkthmltopdf)
+
+pdf_path = get_pdf_path(main_folder_user, date_csv, user)
+pdfkit.from_file(html_path, pdf_path, configuration=config)
 
 print("\nEND")
