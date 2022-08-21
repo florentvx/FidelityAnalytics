@@ -47,8 +47,10 @@ class allocation_item:
             if asset.amount < 0:
                 raise ValueError("Negative dividends???")
             if self.core.name == "Cash":
+                # just adding the cash into the cash part of the alloc.
                 self.core.add_quantity(asset)
             else:
+                # adding the dividend statistic to the asset paying the div.
                 self.dividends.add(date, asset.amount)
                 self.dividends_ratio.add(date, asset.amount / self.core.amount)
                 #self.core.add_quantity(asset)
