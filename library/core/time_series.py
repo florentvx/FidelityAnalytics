@@ -61,16 +61,32 @@ class timeseries:
     def get(self, date: dt.date):
         return self._data.get(date, None)
 
+    def get_closest(self, date: dt.date, is_before: bool = True):
+        res = self.get(date)
+        if not res is None:
+            return res
+        if is_before:
+            return [self._data[k] for k in self._data.keys() if k < date][-1]
+        else:
+            return [self._data[k] for k in self._data.keys() if k > date][0]
+
     def _to_list(self) -> list:
         return [v for (k,v) in self._data.items()]
 
-    def sum(self):
+    def sum(self) -> float:
         return sum(self._to_list())
 
     def average(self):
         if self.size == 0:
             return 0
         return average(self._to_list())
+
+    def copy_paste(self, ts: timeseries) -> None:
+        for k in ts._data.keys():
+            if k in self._data.keys():
+                raise ValueError("key already used") 
+            self.add(k, ts._data[k])
+        return
     
     def __str__(self) -> str:
         res = self.name + ": "
@@ -99,5 +115,5 @@ def adjust_timeseries_by_coverage(
                 new_ts[keys[i]] = ts.get(keys[i]) / last_coverage
             new_ts[ts.get_last_date()] = ts.get_last_value() / last_coverage
     
-    return timeseries(override_name, new_ts)
+    return timeseries(new_name, new_ts)
 

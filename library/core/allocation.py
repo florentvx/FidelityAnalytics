@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import datetime as dt
 
+from library.core.asset_analytics import asset_analytics
+
 from .transaction_type import transaction_type
 from .asset import asset
 from .time_series import timeseries
@@ -10,9 +12,10 @@ from .format import *
 class allocation_item:
     
     core:               asset
-    dividends:          timeseries
-    dividends_ratio:    timeseries
-    prices:             timeseries
+    #dividends:          timeseries
+    #dividends_ratio:    timeseries
+    #prices:             timeseries
+    asset_analytics:    asset_analytics
     
     def __init__(
         self, 
@@ -20,9 +23,17 @@ class allocation_item:
         ):
 
         self.core = asset(name, 0, 0, 0, 0)
-        self.dividends = timeseries(f"{name}_DIV")
-        self.dividends_ratio = timeseries(f"{name}_DIV_RAT")
-        self.prices = timeseries(f"{name}_PRICES")
+        #self.dividends = timeseries(f"{name}_DIV")
+        #self.dividends_ratio = timeseries(f"{name}_DIV_RAT")
+        #self.prices = timeseries(f"{name}_PRICES")
+        self.asset_analytics = asset_analytics(name)
+
+    
+    def get_prices_timeseries(self) -> timeseries:
+        return self.asset_analytics.price_data.copy()
+
+    def get_dividends_ratio_timeseries(self) -> timeseries:
+        return self.asset_analytics.get_dividends_ratio_timeseries()
 
     def add_asset(
         self,
@@ -32,8 +43,9 @@ class allocation_item:
         ) -> None:
 
         # update price timeseries (to move else where?)
-        if asset.name != "Cash":
-            self.prices.add(date, asset.price_per_unit)
+        if self.core.name == asset.name:
+            #self.prices.add(date, asset.price_per_unit)
+            self.asset_analytics.add_price(date, asset.price_per_unit)
         
         if tx_type in [transaction_type.CASH_IN_LUMP_SUM, transaction_type.CASH_IN_REGULAR_SAVINGS_PLAN, transaction_type.CASH_IN_FROM_SELL]:
             self.core.add_quantity(asset)
@@ -51,8 +63,9 @@ class allocation_item:
                 self.core.add_quantity(asset)
             else:
                 # adding the dividend statistic to the asset paying the div.
-                self.dividends.add(date, asset.amount)
-                self.dividends_ratio.add(date, asset.amount / self.core.amount)
+                #self.dividends.add(date, asset.amount)
+                #self.dividends_ratio.add(date, asset.amount / self.core.amount)
+                self.asset_analytics.add_dividend(date, asset.amount, self.core.amount)
                 #self.core.add_quantity(asset)
         elif tx_type in [transaction_type.CASH_IN_RING_FENCED_FOR_FEES, transaction_type.TRANSFER_TO_CASH_MANAGEMENT_ACCOUNT_FOR_FEES]:
             # fees are already registered as "service fee"
@@ -64,24 +77,23 @@ class allocation_item:
     def copy(self):
         res = allocation_item(self.core.name)
         res.core = self.core.copy()
-        res.dividends = self.dividends.copy()
-        res.dividends_ratio = self.dividends_ratio.copy()
-        res.prices = self.prices.copy()
+        res.asset_analytics = self.asset_analytics.copy()
         return res
 
     def __str__(self):
-        if self.dividends.size == 0:
+        tot_div = self.get_dividends_total()
+        if tot_div == 0:
             return f"{self.core}"
         else:
-            return f"{self.core} - Dividends: {round(self.dividends.sum(), 2)}"# - {self.average_dividend_rate}"
+            return f"{self.core} - Dividends: {round(tot_div, 2)}"# - {self.average_dividend_rate}"
 
     # region statistics
     
     def get_dividends_total(self) -> float:
-        return self.dividends.sum()
+        return self.asset_analytics.get_dividends_total()
 
     def get_dividends_average_rate(self) -> float:
-        return self.dividends_ratio.average() * 4
+        return self.asset_analytics.get_dividends_yearly_average_rate()
     
     def get_dividends_expectation(self) -> float:
         # the div average ratio is assumed to be quarterly
