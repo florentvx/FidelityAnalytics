@@ -1,4 +1,7 @@
 
+from math import log
+
+
 def format_number(
     input               : float, 
     thousand_separator  : str = ",", 
@@ -7,6 +10,7 @@ def format_number(
     suffix              : str = "",
     scaling             : float = 1.0,
     decimal_precision   : int = 2,
+    do_final_check      : bool = True,
     ) -> str:
 
     if thousand_separator == decimals_separator:
@@ -22,7 +26,12 @@ def format_number(
     x_int_str = str(x_int)
     rest = ""
     if decimal_precision > 0:
-        rest = str(int(round((x - x_int) * (10**decimal_precision))))
+        rest_int = int(round((x - x_int) * (10**decimal_precision)))
+        if rest_int == 0:
+            rest = "0"
+        else:
+            rest_prefix = "".join(["0" for tmp in range(int(log(rest_int, 10))+1, decimal_precision)])
+            rest = rest_prefix + str(rest_int)
     rest_cutting = True
     while rest_cutting:
         if len(rest) == 0:
@@ -45,7 +54,13 @@ def format_number(
 
     if len(rest) > 0:
         rest = decimals_separator + rest
-    return f"{minus}{prefix}{thousand_separator.join(res)}{rest}{suffix}"
+    
+    final_res = f"{minus}{prefix}{thousand_separator.join(res)}{rest}{suffix}"
+    if do_final_check:
+        err = float(final_res.replace(prefix, "").replace(suffix, "").replace(",", "").replace(" ","")) - input * scaling
+        if abs(err) > 10**(-decimal_precision):
+            raise ValueError(f"test failed: {final_res} {input * scaling}")
+    return final_res
 
 
 def format_amount(amount: float, decimal_precision = 2) -> str:
@@ -53,3 +68,14 @@ def format_amount(amount: float, decimal_precision = 2) -> str:
 
 def format_percentage(percentage: float) -> str:
     return format_number(percentage, suffix=" %", scaling = 100.0)
+
+
+if __name__ == "__main__":
+    a = format_number(-2.0712346)
+    print(a)
+    b = format_number(-2123456.0712346)
+    print(b)
+    c = format_number(-2.75678)
+    print(c)
+    d = format_number(-2123456.71134)
+    print(d)
