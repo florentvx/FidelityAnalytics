@@ -28,6 +28,8 @@ def _get_path(
     extension: str,
     suffix: str = '',
     ):
+    if suffix is None:
+        suffix = ''
     if len(suffix) > 0 and suffix[0] != "_":
         suffix = "_" + suffix
     return main_folder + f"\\{folder}\\{name}_{user_name}_{get_date_to_string(date)}{suffix}.{extension}"

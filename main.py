@@ -7,7 +7,7 @@ main_folder = r'C:\Users\flore\GoogleDrive\Fidelity'
 
 user= "florent_vassaux"
 date_csv = dt.date(2022, 8, 13)
-output_suffix = "TEST2"
+output_suffix = None
 
 ''' Code '''
 
