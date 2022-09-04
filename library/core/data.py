@@ -19,38 +19,51 @@ def get_date_to_string(
         date_day = "0" + date_day
     return f"{date_csv.year}{delimeter}{date_month}{delimeter}{date_day}"
 
-def _get_path(main_folder: str, folder: str, name: str, user_name: str, date: dt.date, extension: str):
-    return main_folder + f"\\{folder}\\{name}_{user_name}_{get_date_to_string(date)}.{extension}"
+def _get_path(
+    main_folder: str, 
+    folder: str, 
+    name: str, 
+    user_name: str, 
+    date: dt.date,
+    extension: str,
+    suffix: str = '',
+    ):
+    if len(suffix) > 0 and suffix[0] != "_":
+        suffix = "_" + suffix
+    return main_folder + f"\\{folder}\\{name}_{user_name}_{get_date_to_string(date)}{suffix}.{extension}"
 
 def get_csv_path(
     main_folder:    str,
     date_csv:       dt.date,
     user_name:      str,
     name:           str = None,
+    suffix:         str = '',
     ):
     if name is None:
         name = "TransactionHistory"
-    return _get_path(main_folder, "data", name, user_name, date_csv, "csv")
+    return _get_path(main_folder, "data", name, user_name, date_csv, "csv", suffix=suffix)
 
 def get_html_path(
     main_folder:    str,
     date_csv:       dt.date,
     user_name:      str,
     name:           str = None,
+    suffix:         str = '',
     ):
     if name is None:
         name = "FidelityAnalytics"
-    return _get_path(main_folder, "pages", name, user_name, date_csv, "html")
+    return _get_path(main_folder, "pages", name, user_name, date_csv, "html", suffix=suffix)
 
 def get_pdf_path(
     main_folder:    str,
     date_csv:       dt.date,
     user_name:      str,
     name:           str = None,
+    suffix:         str = '',
     ):
     if name is None:
         name = "FidelityAnalytics"
-    return _get_path(main_folder, "pdf", name, user_name, date_csv, "pdf")
+    return _get_path(main_folder, "pdf", name, user_name, date_csv, "pdf", suffix=suffix)
 
 def convert_numpy_nan(x):
     if x is np.nan:

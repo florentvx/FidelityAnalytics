@@ -3,8 +3,13 @@ import jinja2
 
 main_folder = r'C:\Users\flore\GoogleDrive\Fidelity'
 
+''' Inputs '''
+
 user= "florent_vassaux"
-date_csv = dt.date(2022, 7, 14)
+date_csv = dt.date(2022, 8, 13)
+output_suffix = "TEST2"
+
+''' Code '''
 
 main_folder_user = f"{main_folder}\\{user}"
 
@@ -69,7 +74,7 @@ output = template.render(
     }
 )
 
-html_path = get_html_path(main_folder_user, date_csv, user)
+html_path = get_html_path(main_folder_user, date_csv, user, suffix=output_suffix)
 
 with open(html_path, "w") as text_file:
     text_file.write(output)
@@ -80,7 +85,7 @@ import pdfkit
 path_wkthmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
 config = pdfkit.configuration(wkhtmltopdf=path_wkthmltopdf)
 
-pdf_path = get_pdf_path(main_folder_user, date_csv, user)
+pdf_path = get_pdf_path(main_folder_user, date_csv, user, suffix=output_suffix)
 pdfkit.from_file(html_path, pdf_path, configuration=config)
 
 print("\nEND")
