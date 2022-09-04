@@ -16,9 +16,9 @@ class history_item:
     alloc:              allocation
 
     # keeping record of the last transaction
-    tx_type:            transaction_type = transaction_type.START
-    source_investment:  str = None
-    asset:              asset = None
+    tx_type:            transaction_type
+    source_investment:  str
+    asset:              asset
 
     def __init__(
         self, 
@@ -30,6 +30,9 @@ class history_item:
         self.alloc = allocation()
         if not alloc is None:
             self.alloc = alloc.copy()
+        self.tx_type = transaction_type.START
+        self.source_investment = None
+        self.asset = None
 
     def get_allocation_asset_list(self) -> list[str]:
         return list(self.alloc.keys())

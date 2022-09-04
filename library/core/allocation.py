@@ -12,9 +12,6 @@ from .format import *
 class allocation_item:
     
     core:               asset
-    #dividends:          timeseries
-    #dividends_ratio:    timeseries
-    #prices:             timeseries
     asset_analytics:    asset_analytics
     
     def __init__(
@@ -23,9 +20,6 @@ class allocation_item:
         ):
 
         self.core = asset(name, 0, 0, 0, 0)
-        #self.dividends = timeseries(f"{name}_DIV")
-        #self.dividends_ratio = timeseries(f"{name}_DIV_RAT")
-        #self.prices = timeseries(f"{name}_PRICES")
         self.asset_analytics = asset_analytics(name)
 
     
