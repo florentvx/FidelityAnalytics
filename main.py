@@ -1,13 +1,17 @@
 from library import *
 import jinja2
 
+from library.core.allocation import allocation_item
+from library.core.history import MONTH_LIST, history_item
+
 main_folder = r'C:\Users\flore\GoogleDrive\Fidelity'
 
 ''' Inputs '''
 
 user= "florent_vassaux"
-date_csv = dt.date(2022, 8, 13)
-output_suffix = None
+
+date_csv = dt.date(2022, 9, 16)
+output_suffix = "TEST"
 
 ''' Code '''
 
@@ -16,7 +20,7 @@ main_folder_user = f"{main_folder}\\{user}"
 my_csv_path = get_csv_path(main_folder_user, date_csv, user)
 fidelity_data = get_fidelity_data(my_csv_path, print_steps=False)
 
-last_data = fidelity_data.get_last()
+last_data : history_item = fidelity_data.get_last()
 
 print(f"\nLast Data: {last_data.date}\n")
 
@@ -28,8 +32,8 @@ plots = []
 
 for asset_name in last_data.get_allocation_asset_list():
 
-    asset_selected = last_data.get_allocation_asset(asset_name)
-    asset_prices = asset_selected.get_prices_timeseries()
+    asset_selected : allocation_item = last_data.get_allocation_asset(asset_name)
+    asset_prices : timeseries = asset_selected.get_prices_timeseries()
 
     if asset_prices.size > 1 and asset_name != "Cash":
         plots += [
@@ -71,6 +75,9 @@ output = template.render(
         'date':         get_date_to_string(date_csv, "/"),
         'total_data':   last_data.get_dict_total_stat_report(),
         'data':         last_data.get_dict_stat_report(),
+        'month_list':   MONTH_LIST,
+        'div_data':     last_data.get_dividends_profile(),
+        'div_data_total': last_data.get_dividends_profile(is_total = True),
         'plots':        plots,
     }
 )

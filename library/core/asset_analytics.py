@@ -110,25 +110,34 @@ class asset_analytics:
             for i in self.data.keys()
         ])
 
-    def get_dividends_yearly_average_rate(self):
+    def get_dividends_profile(self):
         list_div = {
             i: self.data[i].div_ratio_data.values()
             for i in self.data.keys()
         }
         if len(list_div) == 0:
-            return 0.0
+            return {}
         list_div_max_size = max([
             len(list_div[i])
             for i in list_div.keys()
         ])
         if list_div_max_size >= 2:
-            return sum([average(list_div[i]) for i in list_div.keys()])
+            return {k: average(v) for (k,v) in list_div.items()}
         else:
-            # the guess is that dividends are quarterly
-            return average([v for v in list_div.values()])*4.0
+            first_month = min(list(list_div.keys())) - 1
+            div_average =  average([v for v in list_div.values()])
+            my_months = [(first_month + 3*i) % 12 + 1 for i in range(4)]
+            return {
+                
+                    mth: list_div[mth][0]
+                    if mth in list_div.keys() 
+                    else div_average
+                    for mth in my_months
+            }
 
-
-        
+    def get_dividends_yearly_average_rate(self):
+        dico = self.get_dividends_profile()
+        return sum([v for v in dico.values()])
 
         
             

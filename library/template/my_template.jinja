@@ -78,6 +78,32 @@
     <br>
     ---------------
 
+    <h3>Dividends Schedule</h3>
+
+    <table style="width:100%">
+        <tr>
+            <th>Month</th>
+            {% for item in div_data -%}
+                <th>{{ item }}</th>
+            {% endfor %}
+            <th>Total</th>
+        </tr>
+
+        {% for i in range(12) -%}
+            <tr>
+                <td>{{ month_list[i] }}</td>
+                {% for item in div_data -%}
+                    <td>{{ div_data[item][i] }}</td>
+                {% endfor %}
+                <td>{{ div_data_total[i] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <br>
+
+
+    ---------------
+
     <h2>Graphs</h2>
     
     {% for plt in plots -%}

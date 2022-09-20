@@ -9,6 +9,8 @@ from .transaction_type import transaction_type
 from .asset import asset
 from .allocation import allocation, allocation_item
 
+MONTH_LIST = [dt.datetime(2000, i+1, 1).strftime("%B") for i in range(12)]
+
 class history_item:
     
     # main attributes
@@ -153,6 +155,33 @@ class history_item:
 
     #endregion
 
+    def get_dividends_profile(self, cleaning: bool = True, is_total: bool = False):
+        raw_dict = {
+            asset: self.get_allocation_asset(asset).get_dividends_profile() 
+            for asset in self.get_allocation_asset_list()
+        }
+        if not (cleaning or is_total):
+            return raw_dict
+        if is_total:
+            return {
+                i: format_amount(
+                    sum([
+                        v.get(i,0) for v in raw_dict.values()
+                    ])
+                )
+                for i in range(12)
+            }
+        def _clean(d : dict):
+            return {
+                i: format_amount(d.get(i,0)) 
+                for i in range(12)
+            }
+        return {
+            k: _clean(v) 
+            for (k,v) in raw_dict.items()
+            if len(v) > 0
+        }
+        
     
 class history:
     _data : list[history_item]

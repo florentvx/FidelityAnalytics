@@ -86,6 +86,9 @@ class allocation_item:
     def get_dividends_total(self) -> float:
         return self.asset_analytics.get_dividends_total()
 
+    def get_dividends_profile(self):
+        return {k: v * self.core.amount for (k,v) in self.asset_analytics.get_dividends_profile().items()}
+
     def get_dividends_average_rate(self) -> float:
         return self.asset_analytics.get_dividends_yearly_average_rate()
     
