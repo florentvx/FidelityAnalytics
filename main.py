@@ -1,8 +1,4 @@
 from library import *
-import jinja2
-
-from library.core.allocation import allocation_item
-from library.core.history import MONTH_LIST, history_item
 
 main_folder = r'C:\Users\flore\GoogleDrive\Fidelity'
 
@@ -16,9 +12,12 @@ output_suffix = "TEST"
 ''' Code '''
 
 main_folder_user = f"{main_folder}\\{user}"
+csv_path = get_csv_path(main_folder_user, date_csv, user)
+html_path = get_html_path(main_folder_user, date_csv, user, suffix=output_suffix)
+pdf_path = get_pdf_path(main_folder_user, date_csv, user, suffix=output_suffix)
 
-my_csv_path = get_csv_path(main_folder_user, date_csv, user)
-fidelity_data = get_fidelity_data(my_csv_path, print_steps=False)
+
+fidelity_data = get_fidelity_data(csv_path, print_steps=False)
 
 last_data : history_item = fidelity_data.get_last()
 
@@ -64,12 +63,7 @@ for asset_name in last_data.get_allocation_asset_list():
 
 plt.close("all")
 
-# write data into html page
-
-jfsl = jinja2.FileSystemLoader(searchpath="./library/template/")
-tmp_env = jinja2.Environment(loader=jfsl)
-template = tmp_env.get_template("my_template.jinja")
-output = template.render(
+template_to_html(
     {
         'user_name':    user,
         'date':         get_date_to_string(date_csv, "/"),
@@ -79,21 +73,13 @@ output = template.render(
         'div_data':     last_data.get_dividends_profile(),
         'div_data_total': last_data.get_dividends_profile(is_total = True),
         'plots':        plots,
-    }
+    },
+    html_path,
 )
 
-html_path = get_html_path(main_folder_user, date_csv, user, suffix=output_suffix)
-
-with open(html_path, "w") as text_file:
-    text_file.write(output)
-
-# convert html to pdf
-
-import pdfkit
-path_wkthmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
-config = pdfkit.configuration(wkhtmltopdf=path_wkthmltopdf)
-
-pdf_path = get_pdf_path(main_folder_user, date_csv, user, suffix=output_suffix)
-pdfkit.from_file(html_path, pdf_path, configuration=config)
+convert_html_to_pdf(
+    html_path, 
+    pdf_path
+)
 
 print("\nEND")
