@@ -29,6 +29,10 @@ def format_number(
         rest_int = int(round((x - x_int) * (10**decimal_precision)))
         if rest_int == 0:
             rest = "0"
+        elif rest_int == 10**decimal_precision:
+            x_int = int(x) + 1
+            x_int_str = str(x_int)
+            rest = "0"
         else:
             rest_prefix = "".join(["0" for tmp in range(int(log(rest_int, 10))+1, decimal_precision)])
             rest = rest_prefix + str(rest_int)
@@ -71,6 +75,8 @@ def format_percentage(percentage: float) -> str:
 
 
 if __name__ == "__main__":
+    test = format_number(0.01997268, suffix=" %", scaling=100.0)
+    print(test)
     a = format_number(-2.0712346)
     print(a)
     b = format_number(-2123456.0712346)
