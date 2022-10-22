@@ -36,8 +36,8 @@ class history_item:
         self.source_investment = None
         self.asset = None
 
-    def get_allocation_asset_list(self) -> list[str]:
-        return list(self.alloc.keys())
+    def allocation_keys(self):
+        return self.alloc.keys()
 
     def get_allocation_asset(self, name: str) -> allocation_item:
         return self.alloc.get(name, trigger_error=True)
@@ -68,7 +68,7 @@ class history_item:
     # region statistics
 
     def get_total_value(self, name: str = None, include_cash : bool = True) -> float:
-        items = self.get_allocation_asset_list()
+        items = self.allocation_keys()
         if not name is None:
             items = [name]
 
@@ -79,7 +79,7 @@ class history_item:
         ])
         
     def get_dividends_total(self, name: str = None) -> float:
-        items = self.get_allocation_asset_list()
+        items = self.allocation_keys()
         if not name is None:
             items = [name]
 
@@ -90,7 +90,7 @@ class history_item:
         ])
 
     def get_dividends_expectation(self, name: str = None) -> float:
-        items = self.get_allocation_asset_list()
+        items = self.allocation_keys()
         if not name is None:
             items = [name]
         
@@ -101,7 +101,7 @@ class history_item:
         ])
 
     def get_dividends_average_rate(self, name: str = None) -> float:
-        items = self.get_allocation_asset_list()
+        items = self.allocation_keys()
         if not name is None:
             items = [name]
         
@@ -112,7 +112,7 @@ class history_item:
         ])
     
     def print_stats_report(self, name : str = None) -> None:
-        items = self.get_allocation_asset_list()
+        items = self.allocation_keys()
         if not name is None:
             items = [name]
         
@@ -140,7 +140,7 @@ class history_item:
     def get_dict_stat_report(self):
         return {
             key: self.get_allocation_asset(key).get_dict_stat_report()
-            for key in self.get_allocation_asset_list()
+            for key in self.allocation_keys()
         }
 
     def print_total_stats_report(self) -> None:
@@ -155,18 +155,19 @@ class history_item:
 
     #endregion
 
-    def get_dividends_profile(self, cleaning: bool = True, is_total: bool = False):
+    def get_dividends_profile(self, is_total: bool = False, cleaning: bool = True):
         raw_dict = {
             asset: self.get_allocation_asset(asset).get_dividends_profile() 
-            for asset in self.get_allocation_asset_list()
+            for asset in self.allocation_keys()
         }
-        #if not (cleaning or is_total):
-        #    return raw_dict
+        if not (cleaning or is_total):
+           return raw_dict
         if is_total:
             return {
                 i: format_amount(
                     sum([
-                        v.get(i+1,0) for v in raw_dict.values()
+                        v.get(i+1,0) 
+                        for v in raw_dict.values()
                     ])
                 )
                 for i in range(12)

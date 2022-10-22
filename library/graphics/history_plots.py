@@ -9,7 +9,7 @@ def get_plots_from_history_item(
 
     plots = []
 
-    for asset_name in last_data.get_allocation_asset_list():
+    for asset_name in last_data.allocation_keys():
 
         asset_selected : allocation_item = last_data.get_allocation_asset(asset_name)
         asset_prices : timeseries = asset_selected.get_prices_timeseries()

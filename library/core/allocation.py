@@ -144,8 +144,8 @@ class allocation:
     def __init__(self):
         self._data = {}
 
-    def keys(self) -> list[str]:
-        return list(self._data.keys())
+    def keys(self):
+        return self._data.keys()
 
     def get(
         self, 
