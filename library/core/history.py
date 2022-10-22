@@ -160,20 +160,20 @@ class history_item:
             asset: self.get_allocation_asset(asset).get_dividends_profile() 
             for asset in self.get_allocation_asset_list()
         }
-        if not (cleaning or is_total):
-            return raw_dict
+        #if not (cleaning or is_total):
+        #    return raw_dict
         if is_total:
             return {
                 i: format_amount(
                     sum([
-                        v.get(i,0) for v in raw_dict.values()
+                        v.get(i+1,0) for v in raw_dict.values()
                     ])
                 )
                 for i in range(12)
             }
         def _clean(d : dict):
             return {
-                i: format_amount(d.get(i,0)) 
+                i: format_amount(d.get(i+1,0)) 
                 for i in range(12)
             }
         return {
