@@ -5,8 +5,8 @@ from library import *
 
 main_folder = r'C:\Users\flore\GoogleDrive\Fidelity'
 user= "florent_vassaux"
-date_csv = dt.date(2022, 9, 16)
-output_suffix = "TEST"
+date_csv = dt.date(2023, 3, 17)
+output_suffix = ''
 print_info = False
 
 ''' Code '''

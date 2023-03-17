@@ -68,8 +68,17 @@ class asset:
         asset: asset
         ) -> None:
         if asset.quantity >= 0:
-            raise ValueError(f"quantity must be positive: {asset.quantity}")
+            raise ValueError(f"quantity must be negative: {asset.quantity}")
         self.quantity += asset.quantity
+        self._update_market_price(asset.market_price)
+
+    def substract_positive_quantity(
+        self,
+        asset: asset,
+        ) -> None:
+        if asset.quantity <= 0:
+            raise ValueError(f"quantity must be positive: {asset.quantity}")
+        self.quantity -= asset.quantity
         self._update_market_price(asset.market_price)
 
     def add_fee(

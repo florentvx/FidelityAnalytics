@@ -41,7 +41,8 @@ class allocation_item:
             #self.prices.add(date, asset.price_per_unit)
             self.asset_analytics.add_price(date, asset.price_per_unit)
         
-        if tx_type in [transaction_type.CASH_IN_LUMP_SUM, transaction_type.CASH_IN_REGULAR_SAVINGS_PLAN, transaction_type.CASH_IN_FROM_SELL]:
+        if tx_type in [transaction_type.CASH_IN_LUMP_SUM, transaction_type.CASH_IN_REGULAR_SAVINGS_PLAN, \
+            transaction_type.CASH_IN_FROM_SELL, transaction_type.CASH_IN_FEES_FROM_AUTO_SELL]:
             self.core.add_quantity(asset)
         elif tx_type in [transaction_type.DEALING_FEE, transaction_type.SERVICE_FEE]:
             self.core.add_fee(asset)
@@ -49,6 +50,8 @@ class allocation_item:
             self.core.add_buy_transaction(asset)
         elif tx_type in [transaction_type.CASH_OUT_FOR_BUY, transaction_type.SELL, transaction_type.WITHDRAWAL]:
             self.core.substract_quantity(asset)
+        elif tx_type in [transaction_type.AUTO_SELL_FOR_FEES]:
+            self.core.substract_positive_quantity(asset)
         elif tx_type == transaction_type.CASH_DIVIDEND:
             if asset.amount < 0:
                 raise ValueError("Negative dividends???")
