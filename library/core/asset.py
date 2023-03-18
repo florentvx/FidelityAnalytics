@@ -96,7 +96,7 @@ class asset:
         self,
         asset: asset,
         ) -> None:
-        self.price_per_unit = (self.amount + asset.amount) / (self.quantity + asset.quantity)
+        self.price_per_unit = (self.quantity * self.price_per_unit + asset.amount) / (self.quantity + asset.quantity)
         self.quantity += asset.quantity
         self.fees += asset.fees
         self._update_market_price(asset.market_price)
