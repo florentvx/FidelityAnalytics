@@ -77,7 +77,20 @@ class history_item:
             for n in items
             if not n == "Cash" or include_cash
         ])
+    
+    def get_total_pnl(self):
         
+        def aux_pnl(x: allocation_item):
+            return x.core.quantity * (x.core.market_price - x.core.price_per_unit)
+
+        return sum([
+            aux_pnl(self.get_allocation_asset(n))
+            for n in self.allocation_keys()
+        ])
+
+    def get_total_return(self):
+        return self.get_total_pnl() / self.get_total_value()
+
     def get_dividends_total(self, name: str = None) -> float:
         items = self.allocation_keys()
         if not name is None:
@@ -132,6 +145,8 @@ class history_item:
             "total_value"           : format_amount(total_value),
             "total_cash"            : format_amount(total_value - total_asset),
             "total_assets"          : format_amount(total_asset),
+            "total_pnl"             : format_amount(self.get_total_pnl()),
+            "total_return"          : format_percentage(self.get_total_return()),
             "dividends_sum"         : format_amount(self.get_dividends_total()),
             "dividends_ratio"       : format_percentage(self.get_dividends_average_rate()),
             "dividends_expectation" : format_amount(self.get_dividends_expectation()),

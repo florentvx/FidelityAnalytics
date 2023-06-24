@@ -74,6 +74,18 @@
                 <td>{{ data[item].dividends_expectation }}</td>
             </tr>
         {% endfor %}
+        <tr>
+            <td>Total</td>
+            <td></td>
+            <td></td>
+            <td>{{ total_data.total_value }}</td>
+            <td></td>
+            <td>{{ total_data.total_return }}</td>
+            <td>{{ total_data.total_pnl }}</td>
+            <td>{{ total_data.dividends_sum }}</td>
+            <td>{{ total_data.dividends_ratio }}</td>
+            <td>{{ total_data.dividends_expectation }}</td>
+        </tr>
     </table>
     <br>
     ---------------
