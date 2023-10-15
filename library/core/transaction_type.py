@@ -17,6 +17,7 @@ class transaction_type(Enum):
     WITHDRAWAL                                      = 13    # withdraw money from fidelity
     AUTO_SELL_FOR_FEES                              = 14    # sold share to pay some fees
     CASH_IN_FEES_FROM_AUTO_SELL                     = 15    # cash received from the auto-sell (14)
+    CASH_INTEREST                                   = 19    # cash interest from cash account
 
 
 def get_transation_type(x : str):

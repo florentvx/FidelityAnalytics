@@ -121,7 +121,7 @@ class asset_analytics:
             len(list_div[i])
             for i in list_div.keys()
         ])
-        if list_div_max_size >= 2:
+        if list_div_max_size >= 2 or self.name == "Cash":
             return {k: average(v) for (k,v) in list_div.items()}
         else:
             first_month = min(list(list_div.keys())) - 1

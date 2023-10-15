@@ -67,6 +67,9 @@ class allocation_item:
         elif tx_type in [transaction_type.CASH_IN_RING_FENCED_FOR_FEES, transaction_type.TRANSFER_TO_CASH_MANAGEMENT_ACCOUNT_FOR_FEES]:
             # fees are already registered as "service fee"
             pass
+        elif tx_type == transaction_type.CASH_INTEREST:
+            self.core.add_quantity(asset)
+            self.asset_analytics.add_dividend(date, asset.amount, self.core.amount)
         else:
             raise ValueError(f"Unknown transaction type: {tx_type}")
         return

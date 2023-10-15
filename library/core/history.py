@@ -53,7 +53,7 @@ class history_item:
         self.source_investment = source_investment
         self.asset = asset.copy()
         alloc_item = self.alloc.get(self.asset.name)
-        if not self.source_investment is None:
+        if not self.source_investment is None and self.source_investment != 'Cash':
             alloc_item = self.alloc.get(self.source_investment, trigger_error = True)
             # adding the cash amount into the 'Cash' asset
             self.alloc.get("Cash", trigger_error=True).add_asset(self.date, self.tx_type, self.asset)
